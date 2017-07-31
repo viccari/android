@@ -17,6 +17,8 @@ import com.elifut.fragment.TeamSquadFragment;
 import javax.inject.Singleton;
 
 import dagger.Component;
+import okhttp3.OkHttpClient;
+import okreplay.OkReplayInterceptor;
 
 @Singleton
 @Component(modules = {
@@ -26,6 +28,9 @@ import dagger.Component;
     AnalyticsModule.class
 })
 public interface ElifutComponent {
+  OkHttpClient okHttpClient();
+  AppInitializer appInitializer();
+
   void inject(MainActivity mainActivity);
   void inject(CurrentTeamDetailsActivity currentTeamDetailsActivity);
   void inject(TeamPlayersActivity activity);
@@ -44,7 +49,6 @@ public interface ElifutComponent {
 
     static ElifutComponent init(Context context) {
       return DaggerElifutComponent.builder()
-          .elifutModule(new ElifutModule())
           .networkModule(new NetworkModule(context))
           .dataModule(new DataModule(context))
           .analyticsModule(new AnalyticsModule(context))
