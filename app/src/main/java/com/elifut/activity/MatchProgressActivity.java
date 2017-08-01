@@ -2,6 +2,8 @@ package com.elifut.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;
@@ -154,6 +156,7 @@ public class MatchProgressActivity extends ElifutActivity {
     match = round.findMatchByClub(userClub);
     matchResult = match.result();
     loadClubs(match.home().id(), match.away().id());
+    setGameSpeed(userPreferences.gameSpeed());
   }
 
   @Override protected void onDestroy() {
@@ -252,6 +255,17 @@ public class MatchProgressActivity extends ElifutActivity {
     userPreferences.gameSpeedPreference().set(gameSpeed);
     stopTimer();
     startTimer();
+    backwardButton.getBackground().setColorFilter(null);
+    backwardButton.setClickable(true);
+    fastForwardButton.getBackground().setColorFilter(null);
+    fastForwardButton.setClickable(true);
+    if (gameSpeed == MIN_GAME_SPEED) {
+      backwardButton.getBackground().setColorFilter(Color.GRAY, PorterDuff.Mode.MULTIPLY);
+      backwardButton.setClickable(false);
+    } else if (gameSpeed == MAX_GAME_SPEED) {
+      fastForwardButton.getBackground().setColorFilter(Color.GRAY, PorterDuff.Mode.MULTIPLY);
+      fastForwardButton.setClickable(false);
+    }
   }
 
   @OnClick(R.id.fab_backward) void onBackward() {
