@@ -54,6 +54,8 @@ import rx.subscriptions.CompositeSubscription;
 public class MatchProgressActivity extends ElifutActivity {
   private static final String TAG = MatchProgressActivity.class.getSimpleName();
   private static final String EXTRA_ROUND = "EXTRA_ROUND";
+  private static final int MIN_GAME_SPEED = 1;
+  private static final int MAX_GAME_SPEED = 4;
 
   @BindView(R.id.toolbar) Toolbar toolbar;
   @BindView(R.id.img_team_home) ImageView imgTeamHome;
@@ -67,6 +69,8 @@ public class MatchProgressActivity extends ElifutActivity {
   @BindView(R.id.txt_team_away_goals) TextView txtTeamAwayGoals;
   @BindView(R.id.fractionView) FractionView fractionView;
   @BindView(R.id.fab_play_pause) FloatingActionButton playPauseButton;
+  @BindView(R.id.fab_fast_forward) FloatingActionButton fastForwardButton;
+  @BindView(R.id.fab_backward) FloatingActionButton backwardButton;
   @BindView(R.id.fab_done) FloatingActionButton doneButton;
   @BindString(R.string.end_first_half) String strEndOfFirstHalf;
   @BindString(R.string.end_match) String strEndOfMatch;
@@ -209,6 +213,8 @@ public class MatchProgressActivity extends ElifutActivity {
                   Gravity.CENTER_HORIZONTAL);
             }
             playPauseButton.setVisibility(View.GONE);
+            backwardButton.setVisibility(View.GONE);
+            fastForwardButton.setVisibility(View.GONE);
             doneButton.setVisibility(View.VISIBLE);
             fractionView.setFraction(45, 60);
           }
@@ -240,6 +246,24 @@ public class MatchProgressActivity extends ElifutActivity {
     eventsLayout.addView(view, 0);
     eventsTimeline.setVisibility(View.VISIBLE);
     eventsScrollView.smoothScrollTo(0, 0);
+  }
+
+  private void setGameSpeed(int gameSpeed) {
+    userPreferences.gameSpeedPreference().set(gameSpeed);
+    stopTimer();
+    startTimer();
+  }
+
+  @OnClick(R.id.fab_backward) void onBackward() {
+    int currSpeed = userPreferences.gameSpeed();
+    currSpeed/=2;
+    setGameSpeed(Math.max(MIN_GAME_SPEED, currSpeed));
+  }
+
+  @OnClick(R.id.fab_fast_forward) void onFastForward() {
+    int currSpeed = userPreferences.gameSpeed();
+    currSpeed*=2;
+    setGameSpeed(Math.min(MAX_GAME_SPEED, currSpeed));
   }
 
   @OnClick(R.id.fab_play_pause) void onClickPause() {
